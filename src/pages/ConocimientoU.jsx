@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import {Toaster,toast} from 'react-hot-toast';
 
 import EjercicioImg from '../assets/ejercicio.png';
 import AmigosImg from '../assets/amigos.png';
@@ -65,6 +65,7 @@ const ConocimientoU = () => {
         >
           Continuar
         </button>
+        <Toaster position='top-center'/>
       </div>
     );
   };
