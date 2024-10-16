@@ -50,7 +50,7 @@ const Login = () => {
     }
 
     // Navegación al siguiente paso si la validación es correcta
-    navigate('/main');
+    navigate('/conocimiento');
   };
 
   return (

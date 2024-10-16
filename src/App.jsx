@@ -13,6 +13,10 @@ import Product from './pages/Product'
 import { ToastContainer } from 'react-toastify'
 import SearchBar from './components/SearchBar'
 import ShopContextProvider from './context/ShopContext'
+import MainE from './pages/MainE'
+import AdimnU from './pages/AdimnU'
+import AdminE from './pages/AdminE'
+import ConocimientoU from './pages/ConocimientoU'
 
 function App() {
 
@@ -29,6 +33,10 @@ function App() {
       <Route path='/inventario' element={<Inventario/>} />
       <Route path='/main' element={<Main/>} />
       <Route path='/product/:productId' element={<Product/>} />
+      <Route path='/mainE' element={<MainE/>}/>
+      <Route path='/adminU' element={<AdimnU/>}/>
+      <Route path='/adminE' element={<AdminE/>}/>
+      <Route path='/conocimiento' element={<ConocimientoU/>}/>
     </Routes>
 
     <Footer/>

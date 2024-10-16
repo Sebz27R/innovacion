@@ -70,7 +70,7 @@ const LoginE = () => {
     }
 
     // Navegar solo si todos los campos son válidos
-    navigate('/main');
+    navigate('/mainE');
   };
 
   return (
