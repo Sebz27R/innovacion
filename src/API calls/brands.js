@@ -7,7 +7,7 @@ const getAllBrands = () => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        
+        }
     });
 };
 
