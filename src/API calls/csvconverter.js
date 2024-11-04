@@ -4,10 +4,13 @@ const FormData = require('form-data');
 
 require('dotenv').config();
 
-const authPath = process.env.API_PATH + '/csvchanger/csvchanger';
+const csvchangerPath = process.env.API_PATH + '/csvchanger/csvchanger';
 
-const sendCsvFile = async (filePath) => {
-    // TODO
+const sendCsvFile = async (file) => {
+    return fetch(csvchangerPath, {
+        method: 'POST',
+        body: file
+    });
 }
 
 module.exports = {
