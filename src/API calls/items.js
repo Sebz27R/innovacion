@@ -1,30 +1,26 @@
 require('dotenv').config();
 
-const itemPath = process.env.API_PATH + '/item';
+const itemPath = process.env.API_PATH + '/item/item';
 
-const getAllItems = async () => {
-    const response = await fetch(itemPath, {
+const getAllItems = () => {
+    return fetch(itemPath, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     });
-
-    return response;
 };
 
-const getItem = async (itemId) => {
-    const response = await fetch(`${itemPath}/${itemId}`, {
+const getItem = (itemId) => {
+    return fetch(`${itemPath}/${itemId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     });
-
-    return response;
 };
 
-const deleteItem = async (itemId) => {
+const deleteItem = (itemId) => {
     fetch(`${itemPath}/${itemId}`, {
         method: 'DELETE',
         headers: {
@@ -33,19 +29,17 @@ const deleteItem = async (itemId) => {
     });
 };
 
-const createItem = async (item) => {
-    const response = await fetch(itemPath, {
+const createItem = (item) => {
+    return fetch(itemPath, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(item)
     });
-
-    return response;
 };
 
-const updateItem = async (itemId, itemUpdate) => {
+const updateItem = (itemId, itemUpdate) => {
     fetch(`${itemPath}/${itemId}`, {
         method: 'PUT',
         headers: {
@@ -55,7 +49,7 @@ const updateItem = async (itemId, itemUpdate) => {
     });
 };
 
-const deactivateItem = async (itemId) => {
+const deactivateItem = (itemId) => {
     fetch(`${itemPath}/${itemId}/deactivate`, {
         method: 'PUT',
         headers: {

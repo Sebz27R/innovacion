@@ -2,41 +2,35 @@ require('dotenv').config();
 
 const brandPath = process.env.API_PATH + '/brand';
 
-const getAllBrands = async () => {
-    const response = await fetch(brandPath, {
+const getAllBrands = () => {
+    return fetch(brandPath, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        
+    });
+};
+
+const getBrand = (brandId) => {
+    return fetch(`${brandPath}/${brandId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     });
-
-    return response;
 };
 
-const getBrand = async (brandId) => {
-    const response = await fetch(`${brandPath}/${brandId}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-
-    return response;
-};
-
-const createBrand = async (brand) => {
-    const response = await fetch(brandPath, {
+const createBrand = (brand) => {
+    return fetch(brandPath, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(brand)
     });
-
-    return response;
 };
 
-const updateBrand = async (brandId, brandUpdate) => {
+const updateBrand = (brandId, brandUpdate) => {
     fetch(`${brandPath}/${brandId}`, {
         method: 'PUT',
         headers: {
@@ -48,7 +42,7 @@ const updateBrand = async (brandId, brandUpdate) => {
     return response;
 };
 
-const deleteBrand = async (brandId) => {
+const deleteBrand = (brandId) => {
     fetch(`${brandPath}/${brandId}`, {
         method: 'DELETE',
         headers: {
@@ -57,7 +51,7 @@ const deleteBrand = async (brandId) => {
     });
 };
 
-const addLocation = async (brandId, locationCreation) => {
+const addLocation = (brandId, locationCreation) => {
     fetch(`${brandPath}/location/${brandId}`, {
         method: 'POST',
         headers: {
