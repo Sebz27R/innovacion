@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const LoginE = () => {
@@ -22,70 +22,46 @@ const LoginE = () => {
   const onChangeHandler = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === 'checkbox') {
-      setFormData({
-        ...formData,
-        categorias: { ...formData.categorias, [name]: checked },
-      });
+      setFormData({ ...formData, categorias: { ...formData.categorias, [name]: checked } });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
+  const submitForm = async () => {
+    try {
+      const url = currentState === 'Registrate' ? '/api/empresas/registro' : '/api/empresas/login';
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(currentState === 'Registrate' ? 'Registro exitoso' : 'Inicio de sesión exitoso');
+        navigate('/mainE');
+      } else {
+        throw new Error(data.message || 'Ocurrió un error');
+      }
+    } catch (error) {
+      toast.error(error.message || 'Error en la solicitud');
+    }
+  };
+
   const onSubmitHandler = (event) => {
     event.preventDefault();
-
-    // Validación de campos
-    if (currentState === 'Registrate') {
-      if (
-        !formData.nombreEmpresa ||
-        !formData.email ||
-        !formData.password ||
-        !formData.confirmPassword ||
-        !formData.ciudad ||
-        !Object.values(formData.categorias).some((v) => v) // Verifica al menos un checkbox seleccionado
-      ) {
-        toast.error('Por favor, completa todos los campos.');
-        return;
-      }
-
-      if (formData.password.length < 8) {
-        toast.error('La contraseña debe tener al menos 8 caracteres.');
-        return;
-      }
-
-      if (formData.password !== formData.confirmPassword) {
-        toast.error('Las contraseñas no coinciden.');
-        return;
-      }
-    } else {
-      if (!formData.email || !formData.password) {
-        toast.error('Por favor, completa todos los campos.');
-        return;
-      }
-
-      if (formData.password.length < 8) {
-        toast.error('La contraseña debe tener al menos 8 caracteres.');
-        return;
-      }
+    if (currentState === 'Registrate' && (!formData.nombreEmpresa || !formData.email || formData.password !== formData.confirmPassword)) {
+      toast.error('Por favor, completa todos los campos correctamente.');
+      return;
     }
-
-    // Navegar solo si todos los campos son válidos
-    navigate('/mainE');
+    submitForm();
   };
 
   return (
-    <form
-      onSubmit={onSubmitHandler}
-      className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-[90px] gap-4 text-gray-800"
-    >
-      <ToastContainer/>
-      <div className="inline-flex items-center gap-2 mb-2 mt-10">
-        <p className="font-bold prata-regular text-3xl">{currentState}</p>
-        <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
-      </div>
-      {currentState === 'Inicia sesion' ? (
-        ''
-      ) : (
+    <form onSubmit={onSubmitHandler} className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-[80px] gap-4 text-gray-800">
+      <ToastContainer />
+      {currentState === 'Registrate' && (
         <input
           type="text"
           name="nombreEmpresa"
@@ -112,105 +88,51 @@ const LoginE = () => {
         onChange={onChangeHandler}
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="Contraseña"
-        minLength={8} // Restricción de longitud mínima
+        minLength={8}
         required
       />
-      {currentState === 'Inicia sesion' ? (
-        ''
-      ) : (
-        <input
-          type="password"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={onChangeHandler}
-          className="w-full px-3 py-2 border border-gray-800"
-          placeholder="Confirmar Contraseña"
-          minLength={8} // Restricción de longitud mínima
-          required
-        />
+      {currentState === 'Registrate' && (
+        <>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={onChangeHandler}
+            className="w-full px-3 py-2 border border-gray-800"
+            placeholder="Confirmar Contraseña"
+            minLength={8}
+            required
+          />
+          <select
+            name="ciudad"
+            value={formData.ciudad}
+            onChange={onChangeHandler}
+            className="w-full px-3 py-2 border border-gray-800"
+            required
+          >
+            <option value="" disabled>Selecciona una ciudad</option>
+            <option value="medellin">Medellin</option>
+            <option value="bucaramanga">Bucaramanga</option>
+            <option value="bogota">Bogota</option>
+            <option value="ibague">Ibague</option>
+          </select>
+          <div className="w-full flex flex-col gap-2 mt-2">
+            {Object.keys(formData.categorias).map((categoria) => (
+              <label key={categoria} className="inline-flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name={categoria}
+                  checked={formData.categorias[categoria]}
+                  onChange={onChangeHandler}
+                  className="form-checkbox h-5 w-5 text-purple-600"
+                />
+                {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
+              </label>
+            ))}
+          </div>
+        </>
       )}
-      {currentState === 'Inicia sesion' ? (
-        ''
-      ) : (
-        <select
-          id="ciudad"
-          name="ciudad"
-          value={formData.ciudad}
-          onChange={onChangeHandler}
-          className="w-full px-3 py-2 border border-gray-800"
-          required
-        >
-          <option value="" disabled>
-            Selecciona una ciudad
-          </option>
-          <option value="medellin">Medellin</option>
-          <option value="bucaramanga">Bucaramanga</option>
-          <option value="bogota">Bogota</option>
-          <option value="ibague">Ibague</option>
-        </select>
-      )}
-      <div className="w-full flex justify-between text-sm mt-[-8px]">
-        <p className="cursor-pointer">Olvidaste tu contraseña?</p>
-        {currentState === 'Inicia sesion' ? (
-          <p onClick={() => setCurrentState('Registrate')} className="cursor-pointer">
-            Crea una cuenta
-          </p>
-        ) : (
-          <p onClick={() => setCurrentState('Inicia sesion')} className="cursor-pointer">
-            Inicia sesion
-          </p>
-        )}
-      </div>
-
-      {currentState === 'Inicia sesion' ? (
-        ''
-      ) : (
-        <p className="text-lg font-semibold mt-4 mb-2">¿Cuales categorias vendes?</p>
-      )}
-
-      {currentState === 'Inicia sesion' ? (
-        ''
-      ) : (
-        <div className="w-full flex flex-col gap-2">
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="ropa"
-              checked={formData.categorias.ropa}
-              onChange={onChangeHandler}
-              className="form-checkbox h-5 w-5 text-purple-600"
-            />
-            <span className="text-gray-800">Ropa</span>
-          </label>
-
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="zapatos"
-              checked={formData.categorias.zapatos}
-              onChange={onChangeHandler}
-              className="form-checkbox h-5 w-5 text-purple-600"
-            />
-            <span className="text-gray-800">Zapatos</span>
-          </label>
-
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="accesorios"
-              checked={formData.categorias.accesorios}
-              onChange={onChangeHandler}
-              className="form-checkbox h-5 w-5 text-purple-600"
-            />
-            <span className="text-gray-800">Accesorios</span>
-          </label>
-        </div>
-      )}
-
-      <button
-        type="submit"
-        className="bg-[#4C0070] text-white font-bold px-8 py-2 mt-4 rounded-md hover:bg-[#3F0060]"
-      >
+      <button type="submit" className="bg-[#4C0070] text-white font-bold px-8 py-2 mt-4 rounded-md hover:bg-[#3F0060]">
         {currentState === 'Inicia sesion' ? 'Inicia sesion' : 'Ingresa'}
       </button>
     </form>

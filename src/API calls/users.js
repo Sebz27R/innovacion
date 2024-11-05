@@ -39,3 +39,5 @@ const updateUser = (userId, userNew) => {
         body: JSON.stringify(userNew)
     });
 }
+
+export {createUser}
